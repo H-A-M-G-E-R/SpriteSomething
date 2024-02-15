@@ -268,7 +268,8 @@
       "supplication_look_up_right", "supplication_look_up_right1", "supplication_look_up_right2", "supplication_look_up_right3"
     ],
     [
-      "supplication_left_collapse", "supplication_left_stand_attempt", "supplication_left_stand_attempt1", "supplication_left_stand_attempt2"
+      "supplication_left_collapse", "supplication_left_stand_attempt", "supplication_left_stand_attempt1", "supplication_left_stand_attempt2",
+      "supplication_right_stand_attempt2", "supplication_right_stand_attempt1", "supplication_right_stand_attempt", "supplication_right_collapse"
     ],
     [
       "grapple_counterclockwise", "grapple_counterclockwise1", "grapple_counterclockwise2", "grapple_counterclockwise3",
@@ -460,6 +461,7 @@
     "fall_turn_neutral", "fall_turn_neutral_aim_up", "fall_turn_neutral_aim_down",
     "crouch_turn_neutral", "crouch_turn_neutral_aim_up", "crouch_turn_neutral_aim_down",
     "supplication_left_collapse", "supplication_left_stand_attempt", "supplication_left_stand_attempt1", "supplication_left_stand_attempt2",
+    "supplication_right_collapse", "supplication_right_stand_attempt", "supplication_right_stand_attempt1", "supplication_right_stand_attempt2",
     "elevator", "launcher", "launcher1", "launcher2", "launcher3", "launcher4",
     "launcher5", "launcher6", "launcher7", "launcher8",
     "elevator_varia", "launcher_varia", "launcher1_varia", "launcher2_varia", "launcher3_varia", "launcher4_varia",
@@ -2428,8 +2430,7 @@
       "used by": [
         ["0x1D", 0],
         ["0x79", 0],
-        ["0xD7", 0],
-        ["0xE8", 0]
+        ["0xD7", 0]
       ]
     },
 
@@ -4388,7 +4389,6 @@
         ["0x38", 0],
         ["0x3E", 1],
         ["0xD8", 2],
-        ["0xE9", 1],
         ["0xD4", 1],
         ["0xD4", 3],
         ["0xD4", 12],
@@ -4407,7 +4407,6 @@
         ["0x38", 1],
         ["0x3E", 0],
         ["0xD8", 1],
-        ["0xE9", 0],
         ["0xD4", 0]
       ]
     },
@@ -4422,7 +4421,6 @@
         ["0x37", 0],
         ["0x3D", 1],
         ["0xD7", 2],
-        ["0xE8", 2],
         ["0xD3", 1],
         ["0xD3", 3],
         ["0xD3", 12],
@@ -4440,7 +4438,6 @@
         ["0x37", 1],
         ["0x3D", 0],
         ["0xD7", 1],
-        ["0xE8", 1],
         ["0xD3", 0]
       ]
     },
@@ -4475,8 +4472,8 @@
       "used by": [
         ["0x53", 0],
         ["0xD7", 4],
-        ["0xE8", 3],
-        ["0xE8", 5]
+        ["0xE8", 2],
+        ["0xE8", 4]
       ]
     },
 
@@ -5075,8 +5072,7 @@
       "used by": [
         ["0x35", 0],
         ["0x3B", 0],
-        ["0xEA", 5],
-        ["0xE8", 14]
+        ["0xEA", 5]
       ]
     },
 
@@ -5845,7 +5841,7 @@
     },
 
     "supplication_left_collapse": {
-      "description": "After taking a rainbow beam to the face, this pose is used when Samus makes contact with the ground, before collapsing",
+      "description": "After taking a rainbow beam to the face or being drained by Metroid, this pose is used when Samus makes contact with the ground, before collapsing",
       "dimensions": [-19, -19, 13, 29],
       "parent": "crouch_transition_left",
       "shift": [0, 0],
@@ -5884,6 +5880,44 @@
       "used by": [
         ["0xE9", 16],
         ["0xE9", 21]
+      ]
+    },
+
+    "supplication_right_collapse": {
+      "description": "After being drained by Metroid, this pose is used when Samus makes contact with the ground, before collapsing",
+      "dimensions": [-13, -19, 19, 29],
+      "parent": "crouch_transition_right",
+      "shift": [0, 0],
+      "used by": [
+        ["0xE8", 7]
+      ]
+    },
+
+    "supplication_right_stand_attempt": {
+      "description": "Samus recovers from being paralyzed by Metroid",
+      "dimensions": [-13, -28, 19, 20],
+      "parent": "stand_right",
+      "shift": [0, 9],
+      "used by": [
+        ["0xE8", 14]
+      ]
+    },
+
+    "supplication_right_stand_attempt1": {
+      "dimensions": [-13, -21, 19, 27],
+      "parent": "supplication_right_stand_attempt",
+      "shift": [0, 2],
+      "used by": [
+        ["0xE8", 15]
+      ]
+    },
+
+    "supplication_right_stand_attempt2": {
+      "dimensions": [-13, -19, 19, 29],
+      "parent": "supplication_right_stand_attempt",
+      "shift": [0, 0],
+      "used by": [
+        ["0xE8", 16]
       ]
     },
 

@@ -168,6 +168,14 @@ def rom_inject(player_sprite, spiffy_dict, old_rom, verbose=False):
 		success_code = implement_spin_attack(player_sprite,rom)
 		if verbose:
 			print("done" if success_code else "FAIL")
+		
+		#write new supplication sequence
+
+		if verbose:
+			print("Writing new supplication sequence...", end="")
+		success_code = write_new_supplication_animation(player_sprite,rom)
+		if verbose:
+			print("done" if success_code else "FAIL")
 
 		#insert file select graphics
 		if verbose:
@@ -292,18 +300,18 @@ def write_dma_data(samus,rom):
 		death_freespace = FreeSpace([(0x5A0000,0x5A8000)])
 	elif rom._type.name == "EXLOROM":
 		#this is untested.	In theory works for oversized ROMs.	If not, please submit a bug report so that it can be fixed
-		if rom.get_size_in_MB() >= 8.0:	 #use banks $73-$7D
-			freespace = FreeSpace([(bank * 0x10000 + 0x8000,bank * 0x10000 + 0x10000) for bank in itertools.chain(range(0x9C,0xA0),range(0x73,0x7D))])
+		if rom.get_size_in_MB() >= 8.0:	 #use banks $72-$7D
+			freespace = FreeSpace([(bank * 0x10000 + 0x8000,bank * 0x10000 + 0x10000) for bank in itertools.chain(range(0x9C,0xA0),range(0x72,0x7D))])
 			death_freespace = FreeSpace([(0x7D8000, 0x7E0000)])
-		elif rom.get_size_in_MB() >= 6.0:	 #use banks $35-$3F
-			freespace = FreeSpace([(bank * 0x10000 + 0x8000,bank * 0x10000 + 0x10000) for bank in itertools.chain(range(0x9C,0xA0),range(0x35,0x3F))])
+		elif rom.get_size_in_MB() >= 6.0:	 #use banks $34-$3F
+			freespace = FreeSpace([(bank * 0x10000 + 0x8000,bank * 0x10000 + 0x10000) for bank in itertools.chain(range(0x9C,0xA0),range(0x34,0x3F))])
 			death_freespace = FreeSpace([(0x3F8000, 0x400000)])
 		else:
 			raise AssertionError(f"Could not recognize size of ExLoRom: {rom.get_size_in_MB()}")
 	else:		 #lorom: use banks $F5-$FF
 		#we would like this to be as compatible with ROM hacks as possible, so that hackers can use this program to add new graphics to their hacks
 		#so we will first use the original graphic space, and then work backwards from the end of the rom
-		freespace = FreeSpace([(bank * 0x10000 + 0x8000,bank * 0x10000 + 0x10000) for bank in itertools.chain(range(0x9C,0xA0),range(0xF5,0xFF))])
+		freespace = FreeSpace([(bank * 0x10000 + 0x8000,bank * 0x10000 + 0x10000) for bank in itertools.chain(range(0x9C,0xA0),range(0xF4,0xFF))])
 		#the death DMA data needs to all be in the same bank (here placed in $FF)
 		death_freespace = FreeSpace([(0xFF8000, 0x1000000)])
 
@@ -1455,3 +1463,22 @@ def get_numbered_poses_old_and_new(samus,rom):
 		if animation_string[:2] == "0x":
 			animation_int = int(animation_string[2:],16)
 			yield animation_int, pose
+
+def write_new_supplication_animation(samus,rom):
+	success_code = rom._apply_single_fix_to_snes_address(0x91B010+2*0xE8,0xB257,0xB255,2)
+	success_code = success_code and rom._apply_single_fix_to_snes_address(0x91B257,
+														[0x02, 0x02, 0x02, 0x10, 0xF7,
+														 0x01,
+														 0xFE, 0x01,
+														 0x10, 0x10, 0x10, 0x10,
+														 0xFE, 0x04,
+														 0x03,
+														 0xFD, 0x01],
+														[0x10, 0xF7,
+														 0x01, 0xFE,0x01,
+														 0x08,
+														 0x10, 0x10, 0x10, 0x10,
+														 0xFE, 0x04,
+														 0x10, 0x10, 0x10,
+														 0xFD, 0x01],"1"*17)
+	return success_code
