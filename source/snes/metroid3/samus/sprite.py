@@ -250,10 +250,10 @@ class Sprite(SpriteParent):
 		elif variant_type.lower() == "loader":
 			for _ in range(0x27):	 #in the ROM, this is encoded as 0x24 + 0x03
 				timed_palette.append((3,base_palette))
-				timed_palette.append((3,common.palette_shift(base_palette,(0,80,120))))
+				timed_palette.append((3,common.palette_shift(base_palette,(20,100,240))))
 			for _ in range(3):
 				timed_palette.append((3,base_palette))
-				timed_palette.append((3,common.palette_shift(base_palette,(0,40,120))))
+				timed_palette.append((3,common.palette_shift(base_palette,(0,40,160))))
 			for _ in range(2):
 				timed_palette.append((3,base_palette))
 				timed_palette.append((3,common.palette_shift(base_palette,(0,0,80))))
