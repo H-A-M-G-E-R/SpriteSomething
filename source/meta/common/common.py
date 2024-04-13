@@ -339,26 +339,10 @@ def convert_to_4bpp(image, offset, dimensions, extra_area):
         if y_chad_length == 0:
             pass  # cool
         elif y_chad_length == 8:
-            for x in range(xmin, xmax - 15, 16):
-                # construct the big chads first from (x,chad), (x+8,chad)
+            for x in range(xmin, xmax - 7, 8):
+                # construct the bottom chads
                 small_tiles.extend(get_single_raw_tile(
                     image.crop((x, ymax - 8, x + 8, ymax))))
-                small_tiles.extend(get_single_raw_tile(
-                    image.crop((x + 8, ymax - 8, x + 16, ymax))))
-            # now check for the bottom right chad
-            y_chad_length = ymax - ymin % 16
-            if x_chad_length == 0:
-                pass  # cool
-            elif x_chad_length == 8:
-                # make the final chad
-                small_tiles.extend(get_single_raw_tile(
-                    image.crop((xmax - 8, ymax - 8, xmax, ymax))))
-            else:
-                # FIXME: English
-                raise AssertionError(
-                    f"received call to get_raw_pose() for image" + ' ' +
-                    f"'{image.name}' but the dimensions for x" + ' ' +
-                    f"({xmin},{xmax}) are not divisible by 8")
         else:
             raise AssertionError(
                 f"received call to get_raw_pose() for image" + ' ' +
@@ -366,9 +350,11 @@ def convert_to_4bpp(image, offset, dimensions, extra_area):
                 f"({xmin},{xmax}) are not divisible by 8")
 
     # even out the small tiles into the rest of the space
-    for pos in range(0, len(small_tiles), 0x40):
+    for pos in range(0, len(small_tiles) // 0x40 * 0x40, 0x40):
         top_row.extend(small_tiles[pos:pos + 0x20])
         bottom_row.extend(small_tiles[pos + 0x20:pos + 0x40])
+    if len(small_tiles) % 0x40 == 0x20:
+        top_row.extend(small_tiles[len(small_tiles) - 0x20:len(small_tiles)])
 
     return top_row + bottom_row
 
