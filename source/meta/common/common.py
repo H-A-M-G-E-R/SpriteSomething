@@ -350,11 +350,9 @@ def convert_to_4bpp(image, offset, dimensions, extra_area):
                 f"({xmin},{xmax}) are not divisible by 8")
 
     # even out the small tiles into the rest of the space
-    for pos in range(0, len(small_tiles) // 0x40 * 0x40, 0x40):
+    for pos in range(0, len(small_tiles), 0x40):
         top_row.extend(small_tiles[pos:pos + 0x20])
         bottom_row.extend(small_tiles[pos + 0x20:pos + 0x40])
-    if len(small_tiles) % 0x40 == 0x20:
-        top_row.extend(small_tiles[len(small_tiles) - 0x20:len(small_tiles)])
 
     return top_row + bottom_row
 
