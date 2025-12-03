@@ -94,18 +94,31 @@ class SpriteParent():
     # to be overwritten, unless you see a reason
 
     def load_layout(self):
-        self.layout = layoutlib.Layout(common.get_resource(
-            [self.resource_subpath, "manifests"], "layout.json"))
+        try:
+            # if there's a layout.json in the same folder as the file
+            self.layout = layoutlib.Layout(common.get_resource(
+                os.path.split(self.filename)[0], "layout.json"))
+        except:
+            self.layout = layoutlib.Layout(common.get_resource(
+                [self.resource_subpath, "manifests"], "layout.json"))
 
     def load_animations(self):
-        with open(common.get_resource(
-            [
-                self.resource_subpath,
-                "manifests"
-            ],
-            "animations.json"
-        )) as file:
-            self.animations = json.load(file)
+        try:
+            # if there's an animations.json in the same folder as the file
+            with open(common.get_resource(
+                os.path.split(self.filename)[0],
+                "animations.json"
+            )) as file:
+                self.animations = json.load(file)
+        except:
+            with open(common.get_resource(
+                [
+                    self.resource_subpath,
+                    "manifests"
+                ],
+                "animations.json"
+            )) as file:
+                self.animations = json.load(file)
 
     def import_from_filename(self):
         _, file_extension = os.path.splitext(self.filename)

@@ -5,6 +5,7 @@ import tkinter as tk
 import random
 import json
 import itertools
+import os
 from PIL import Image, ImageTk
 from source.meta.common import common
 from source.meta.gui import gui_common
@@ -25,8 +26,8 @@ class AnimationEngineParent():
 		self.plugins = []
 		self.prev_palette_info = []
 
-		with open(common.get_resource([self.resource_subpath,"manifests"],"animations.json")) as file:
-			self.animations = json.load(file)
+		self.animations = self.sprite.animations
+
 		if "$schema" in self.animations:
 			del self.animations["$schema"]
 		#using a default value until the animation_panel attachment overrides this
