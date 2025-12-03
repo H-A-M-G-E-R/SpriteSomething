@@ -247,16 +247,16 @@ class Layout():
 
         full_layout_collage = self.make_vertical_collage(all_collages)
 
-        # load the original PNG and use a mask to grab everything outside
-        # the frame and paste it back ontop of the collage
+        # expand/shrink canvas if dims are specified
+        # dims need to be specified for autodetect to work
+        if "dims" in self.data:
+            full_layout = Image.new("RGBA", self.data["dims"], 0)
+            full_layout.paste(full_layout_collage, ((self.data["dims"][0] - full_layout_collage.width) // 2, 0))
 
-        samus_mask = Image.open(common.get_resource(os.path.join("snes","metroid3","samus","sheets"),"samus_mask.png"))
-        if (samus_mask.width == full_layout_collage.width) and (os.path.splitext(filename)[1] == "png"):
-            original_image = Image.open(filename).convert("RGBA")
-            full_layout = Image.composite(original_image, full_layout_collage, samus_mask)
+            return full_layout
         else:
-            full_layout = full_layout_collage
-        return full_layout
+            # dims aren't specified, just return the collage
+            return full_layout_collage
 
     def extract_all_images_from_master(self, master_image):
         all_images = {}

@@ -6,6 +6,8 @@
     "and this is intentional because a pose might be mirrored in its first occurance (grapple), or perhaps",
     "the way that it will be present in the ROM is different before and after modification (e.g. screw attack)"
   ],
+  "sig": "ART WAS HERE 000",
+  "dims": [876, 2543],
   "border_color": [0, 0, 127, 255],
   "border_size": 1,
   "layout": [

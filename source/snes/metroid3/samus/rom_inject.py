@@ -127,13 +127,6 @@ def rom_inject(player_sprite, spiffy_dict, old_rom, verbose=False):
 		if verbose:
 			print("done" if success_code else "FAIL")
 
-		#get rid of the stupid tile
-		if verbose:
-			print("Stupid tile...", end="")
-		success_code = no_more_stupid(player_sprite,rom)
-		if verbose:
-			print("stupid" if success_code else "FAIL")
-
 		#because a DMA of zero bytes is essentially a guaranteed game crash, the designers had to make separate subroutines
 		# that made the upper tilemap not display in certain cases.	These subroutines are no longer necessary, because we
 		# fixed the issue in the DMA swap order code, and so now we need to get rid of the subroutines because they break
@@ -185,7 +178,7 @@ def rom_inject(player_sprite, spiffy_dict, old_rom, verbose=False):
 
 		#pee on the tree
 		SIGNATURE_ADDRESS = 0x92C500
-		SIGNATURE_MESSAGE = [ord(x) for x in "ART WAS HERE 000"]
+		SIGNATURE_MESSAGE = [ord(x) for x in player_sprite.layout.data["sig"]]
 		rom.write_to_snes_address(SIGNATURE_ADDRESS,SIGNATURE_MESSAGE,"1"*len(SIGNATURE_MESSAGE))
 
 	else:
@@ -310,15 +303,16 @@ def write_dma_data(samus,rom):
 	DMA_dict = {}	#have to keep track of where we put all this stuff so that we can point to it afterwards
 
 
-	#check to make sure "dma_sequence" in layout.json contains all the needed keys
+	#check to make sure "dma_sequence" in layout.json contains all the needed keys, and append the keys not in "dma_sequence"
+	extra_images = []
 	for image_name in samus.layout.data["images"]:
 		if image_name not in samus.layout.data["dma_sequence"]:
 			if image_name[:6] in ["palett","file_s","gun_po","death_"]:	#these are special cases which will go in other parts of memory
 				pass
 			else:
-				raise AssertionError(f"Error in Samus layout.json: {image_name} not in dma_sequence key")
+				extra_images.append(image_name)
 
-	for image_name in samus.layout.data["dma_sequence"]:
+	for image_name in samus.layout.data["dma_sequence"] + extra_images:
 		DMA_data = get_raw_pose(samus, image_name)
 
 		size = len(DMA_data)
@@ -447,8 +441,8 @@ def link_tables_to_animations(DMA_upper_table_indices, DMA_lower_table_indices, 
 	address_to_write = freespace.get(NULL_SIZE*4)	 #going to fill the null list with the largest number of poses possible in an animation
 	null_entries = [DMA_upper_table_indices["null"][0],
 					DMA_upper_table_indices["null"][1],
-					DMA_lower_table_indices["null"][0],
-					DMA_lower_table_indices["null"][1]]
+					0xFF, # this is so to not transfer lower half, but there's no way to not transfer the upper half
+					0x00]
 	rom.write_to_snes_address(address_to_write,NULL_SIZE*null_entries, "1"*(4*NULL_SIZE))
 	#now assign all the pointers to the null list
 	rom.write_to_snes_address(0x92D94E,[address_to_write % 0x10000 for _ in range(0xFD)],"2"*0xFD)
@@ -546,13 +540,13 @@ def assign_new_tilemaps(samus,rom):
 					extra_area = samus.layout.get_property("extra area", image_name)
 					palette = samus.layout.get_property("palette", image_name)
 					tilemap = get_tilemap_from_dimensions(dimensions, extra_area, palette, 0x08 if force=="lower" else 0x00)
-					if image_name[:14] == "crystal_bubble":
+					if image_name.startswith("crystal_bubble"):
 						#have to make the huge bubble out of just a quarter bubble
 						tilemap = get_quadrated_tilemap(tilemap)
-					elif animation == 0xB2 and pose in itertools.chain(range(0,9),range(25,41),range(57,64)):	#0-8,25-40,57-63
+					elif image_name.startswith("grapple_counterclockwise") and pose in itertools.chain(range(0,9),range(25,41),range(57,64)):	#0-8,25-40,57-63
 						#need to 180 rotate these grapple poses so that they appears as they did in classic for upside-down poses
 						tilemap = rotate_tilemap(tilemap)
-					elif animation == 0xB3 and pose in itertools.chain(range(0,8),range(24,40),range(56,64)):	#0-7,24-39,56-63
+					elif image_name.startswith("grapple_clockwise") and pose in itertools.chain(range(0,8),range(24,40),range(56,64)):	#0-7,24-39,56-63
 						#need to 180 rotate these grapple poses so that they appears as they did in classic for upside-down poses
 						tilemap = rotate_tilemap(tilemap)
 
@@ -888,18 +882,12 @@ def rotate_tilemap(tilemap):
 		rotated_tilemap.extend([x,size,y,tile,palette])
 	return rotated_tilemap
 
-def no_more_stupid(samus,rom):
-	#in theory, I could just break the code that loads the stupid tile, but I won't rest at night until this tile is gone
-	rom.bulk_write_to_snes_address(0x9AD620, [0 for _ in range(0x20)], 0x20)
-	#somehow I have the feeling that it's going to come back for me,
-	# chasing me down while giving an endless monologue on the health benefits of kombucha
-	return True
-
 def disable_upper_bypass(samus,rom):
 	#so if you DMA zero bytes, you actually DMA an entire bank.	And trying to DMA an entire bank into the middle of VRAM
 	# is super bad news.	But this also means that there's not a simple way to avoid DMA -- you have to write a bypass
 	# routine.	This bypass routine served its purpose in the original game but now we've made improvements to the engine
 	# and this routine is actually getting in our way.
+	# This also breaks the code that loads the stupid tile
 	OLD_SUBROUTINES = [0x868D, 0x8686, 0x8686, 0x86C6, 0x8688, 0x8686, 0x8686, 0x8688,
 						 0x8688, 0x8688, 0x86EE, 0x8686, 0x8686, 0x874C, 0x8686, 0x870C,
 						 0x8686, 0x8688, 0x8688, 0x8688, 0x8768, 0x8686, 0x8686, 0x8686,

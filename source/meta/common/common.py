@@ -200,14 +200,15 @@ def image_from_raw_data(tilemaps, DMA_writes, bounding_box):
         #                                            implementation
 
         def draw_tile_to_canvas(new_x_offset, new_y_offset, new_index):
-            tile_to_write = convert_tile_from_bitplanes(DMA_writes[new_index])
-            if h_flip:
-                tile_to_write = np.flipud(tile_to_write)
-            if v_flip:
-                tile_to_write = np.fliplr(tile_to_write)
-            for (i, j), value in np.ndenumerate(tile_to_write):
-                if value != 0:  # if not transparent
-                    canvas[(new_x_offset + i, new_y_offset + j)] = int(value)
+            if new_index < len(DMA_writes): # check if in bounds
+                tile_to_write = convert_tile_from_bitplanes(DMA_writes[new_index])
+                if h_flip:
+                    tile_to_write = np.flipud(tile_to_write)
+                if v_flip:
+                    tile_to_write = np.fliplr(tile_to_write)
+                for (i, j), value in np.ndenumerate(tile_to_write):
+                    if value != 0:  # if not transparent
+                        canvas[(new_x_offset + i, new_y_offset + j)] = int(value)
 
         if big_tile:  # draw all four 8x8 tiles
             draw_tile_to_canvas(x_offset + (8 if h_flip else 0),

@@ -540,7 +540,7 @@ class RomHandler(snes.RomHandlerParent):
 		#now get the specific pointer to the tilemap set (in disassembly: get TM_???)
 		pose_tilemaps_pointer = 0x920000 + self.read_from_snes_address(0x92808D + 2*animation_all_poses_index + 2*pose, 2)
 		#now use that pointer to find out how many tilemaps there actually are
-		if pose_tilemaps_pointer == 0x920000:    #as will be the case when the pointer is zero, specifying no tiles here
+		if pose_tilemaps_pointer < 0x928000:    #as will be the case when the pointer is invalid, specifying no tiles here
 			num_tilemaps = 0
 		else:
 			num_tilemaps = self.read_from_snes_address(pose_tilemaps_pointer, 2)
@@ -557,6 +557,9 @@ class RomHandler(snes.RomHandlerParent):
 		for (base_addr, table, entry, vram_offset) in \
 										[(0x92D938, bottom_DMA_table, bottom_DMA_entry, 0x08), #lower body VRAM
 										 (0x92D91E, top_DMA_table,    top_DMA_entry,    0x00)]: #upper body VRAM
+			if table == 0xFF: # no dma writes (bottom only)
+				continue
+
 			#reference the first index to figure out where the relevant DMA table is
 			this_DMA_table = 0x920000 + self.read_from_snes_address(base_addr + 2*table,2)
 			#From this table, get the appropriate entry in the list which contains the DMA pointer and the row sizes
