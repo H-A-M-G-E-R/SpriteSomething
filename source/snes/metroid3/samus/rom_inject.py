@@ -441,8 +441,8 @@ def link_tables_to_animations(DMA_upper_table_indices, DMA_lower_table_indices, 
 	address_to_write = freespace.get(NULL_SIZE*4)	 #going to fill the null list with the largest number of poses possible in an animation
 	null_entries = [DMA_upper_table_indices["null"][0],
 					DMA_upper_table_indices["null"][1],
-					0xFF, # this is so to not transfer lower half, but there's no way to not transfer the upper half
-					0x00]
+					DMA_lower_table_indices["null"][0],
+					DMA_lower_table_indices["null"][1]]
 	rom.write_to_snes_address(address_to_write,NULL_SIZE*null_entries, "1"*(4*NULL_SIZE))
 	#now assign all the pointers to the null list
 	rom.write_to_snes_address(0x92D94E,[address_to_write % 0x10000 for _ in range(0xFD)],"2"*0xFD)
