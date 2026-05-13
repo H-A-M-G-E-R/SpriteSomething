@@ -276,7 +276,7 @@ class Sprite(SpriteParent):
 				{ "index": 5, "color": (16,0,0) },
 				{ "index": 4, "color": (8,0,0) },
 				{ "index": 4, "color": (8,0,0) },
-				{ "index": 16, "color": (0,0,0) } #fixed: was 3 (8,0,0) in vanilla
+				{ "index": 16, "color": (0,0,0) } #fixed: was 3 (8,0,0) in vanilla for power suit only
 			]
 
 			for shift in palette_shifts:
