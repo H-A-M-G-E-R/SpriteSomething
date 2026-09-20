@@ -23,7 +23,8 @@ def left_align_grid_in_frame(frame):
 	# FIXME: English
 	raise AssertionError("Aligning left in frame is not yet implemented")
 
-def leakless_dropdown_trace(obj, var_to_trace, fun_to_call):
+# TODO: https://github.com/Artheau/SpriteSomething/issues/164
+#def leakless_dropdown_trace(obj, var_to_trace, fun_to_call):
 	#this function will add a "trace" to a particular variable, that is, to allow that variable when changed to call a particular function
 	#normally this is not needed except for when things like sprite or game have widgets that they place into the main GUI
 	#if this process is not done delicately, then there will be a memory leak
@@ -31,12 +32,12 @@ def leakless_dropdown_trace(obj, var_to_trace, fun_to_call):
 	#
 	#example: widgetlib.leakless_dropdown_trace(self, "background_selection", "set_background")
 	#
-	def dropdown_wrapper(this_object):
-		def call_desired_function(*args):
-			getattr(this_object(),fun_to_call)(getattr(this_object(),var_to_trace).get())
-		return call_desired_function
-	getattr(obj,var_to_trace).trace('w', dropdown_wrapper(weakref.ref(obj)))  #when the dropdown is changed, run this function
-	dropdown_wrapper(weakref.ref(obj))()      #trigger this now to initialize
+	#def dropdown_wrapper(this_object):
+		#def call_desired_function(*args):
+			#getattr(this_object(),fun_to_call)(getattr(this_object(),var_to_trace).get())
+		#return call_desired_function
+	#getattr(obj,var_to_trace).trace('w', dropdown_wrapper(weakref.ref(obj)))  #when the dropdown is changed, run this function
+	#dropdown_wrapper(weakref.ref(obj))()      #trigger this now to initialize
 
 
 #this tooltip class modified from

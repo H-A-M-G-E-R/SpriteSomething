@@ -212,7 +212,7 @@ class GameParent():
 		background_dropdown.configure(width=BACKGROUND_DROPDOWN_WIDTH, exportselection=0, textvariable=self.background_selection)
 		background_dropdown.grid(row=0, column=2)
 
-		widgetlib.leakless_dropdown_trace(self, "background_selection", "set_background")
+		#widgetlib.leakless_dropdown_trace(self, "background_selection", "set_background")
 
 		parent.add(background_panel,minsize=PANEL_HEIGHT)
 		return background_panel

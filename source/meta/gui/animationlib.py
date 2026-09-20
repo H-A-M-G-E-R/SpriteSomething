@@ -60,7 +60,7 @@ class AnimationEngineParent():
 		animation_dropdown.grid(row=0, column=2)
 		self.set_animation(self.animation_selection.get())
 
-		widgetlib.leakless_dropdown_trace(self, "animation_selection", "set_animation")
+		#widgetlib.leakless_dropdown_trace(self, "animation_selection", "set_animation")
 
 		parent.add(animation_panel,minsize=PANEL_HEIGHT)
 
