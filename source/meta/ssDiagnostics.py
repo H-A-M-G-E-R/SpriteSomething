@@ -5,8 +5,8 @@ import sys
 import source.meta.common.constants as CONST
 from datetime import datetime
 
-if "windows" in platform.system().lower():
-  import pkg_resources
+#if "windows" in platform.system().lower():
+#  import pkg_resources
 
 def diagpad(inbound):
   return inbound.ljust(len("SpriteSomething Version") + 5,'.')
@@ -31,7 +31,7 @@ def output():
   if hasattr(os, "pathsep"):
     lines.append(diagpad("Path Env Separator") + os.pathsep)
 
-  if("windows" in platform.system().lower() and hasattr(pkg_resources,"working_set") and (len(list(pkg_resources.working_set)) > 0)):
+  '''if("windows" in platform.system().lower() and hasattr(pkg_resources,"working_set") and (len(list(pkg_resources.working_set)) > 0)):
     lines.append("")
     lines.append("Packages")
     lines.append("--------")
@@ -46,7 +46,7 @@ def output():
         longest_pkg = len(pkg[0])
       pkgs[pkg[0]] = pkg[1]
     for pkg_name,pkg_ver in pkgs.items():
-      lines.append(pkg_name.ljust(longest_pkg + 5).replace(' ', filler) + pkg_ver)
+      lines.append(pkg_name.ljust(longest_pkg + 5).replace(' ', filler) + pkg_ver)'''
 
   return lines
 
